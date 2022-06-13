@@ -7,9 +7,21 @@ export default new Vuex.Store({
   state: {
     list:[],
     inputValue:'aaa',
-    nextId:5
+    nextId:5,
+    viewKey:'all'
   },
   getters: {
+     //統計未完成任務
+    unDoneLength(state){
+     return state.list.filter(x => x.done === false).length
+    },
+
+    //依據done狀態顯示對應數據
+    infoList(state){
+      if(state.viewKey === 'all'){return state.list}
+      if(state.viewKey === 'undone'){return state.list.filter(x => !x.done )}
+      if(state.viewKey === 'done'){return state.list.filter( x=> x.done)}
+    }
   },
   mutations: {
     initList(state , list){
@@ -40,7 +52,14 @@ export default new Vuex.Store({
     changeStatus(state , param){
       const i = state.list.find(x => x.id === param.id)
       i.done = param.status
-    
+    },
+
+    cleanDone(state){
+      state.list = state.list.filter( x => x.done === false)
+    },
+
+    changeViewKey(state ,key){
+      state.viewKey = key
     }
   },
   actions: {
